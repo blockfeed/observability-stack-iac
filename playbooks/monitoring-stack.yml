@@ -111,6 +111,15 @@
         state: present
       tags: [monitoring, up]
 
+    - name: Set Grafana admin password (persistent DB)
+      ansible.builtin.command: >
+        docker exec grafana grafana cli admin reset-admin-password '{{ grafana_admin_password }}'
+      no_log: true
+      when:
+        - grafana_admin_password is defined
+        - grafana_admin_password | length > 0
+      tags: [monitoring, grafana]
+
     - name: Show running containers
       ansible.builtin.command: sudo docker ps --format "table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.Status{{'}}'}}\t{{'{{'}}.Ports{{'}}'}}"
       register: docker_ps
